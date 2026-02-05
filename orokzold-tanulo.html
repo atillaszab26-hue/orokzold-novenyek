@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Örökzöld Növények - Tanulói Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2d5a27;
+            --primary-light: #4a7c43;
+            --primary-dark: #1e3d1a;
+            --secondary: #8bc34a;
+            --accent: #ff9800;
+            --success: #4caf50;
+            --error: #f44336;
+            --bg: #f5f7f0;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        nav button:hover {
+            background: var(--secondary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        nav button.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(45,90,39,0.3);
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 0.8rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--success));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Cards Grid for Browse Mode */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .plant-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .plant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .plant-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .plant-card .card-content {
+            padding: 1.2rem;
+        }
+
+        .plant-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .plant-card .details {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .plant-card .details p {
+            margin: 0.3rem 0;
+        }
+
+        .plant-card .details strong {
+            color: var(--text);
+        }
+
+        /* Flashcard Mode */
+        .flashcard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .flashcard {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .flashcard-front {
+            background: white;
+        }
+
+        .flashcard-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-back h2 {
+            font-size: 1.8rem;
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .flashcard-back .info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .flashcard-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .flashcard-hint {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        /* Quiz Mode */
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .quiz-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .quiz-options {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .quiz-option {
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            background: white;
+            text-align: left;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--primary);
+            background: rgba(45,90,39,0.05);
+        }
+
+        .quiz-option.correct {
+            background: rgba(76,175,80,0.15);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .quiz-option.incorrect {
+            background: rgba(244,67,54,0.15);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .quiz-score {
+            text-align: center;
+            padding: 1rem;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .quiz-score span {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        /* Matching Game */
+        .matching-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .matching-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .matching-column h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .matching-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .matching-item {
+            background: white;
+            border: 3px solid transparent;
+            border-radius: 12px;
+            padding: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .matching-item:hover:not(.matched):not(.selected) {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .matching-item.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,152,0,0.3);
+        }
+
+        .matching-item.matched {
+            border-color: var(--success);
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .matching-item.wrong {
+            animation: shake 0.5s ease;
+            border-color: var(--error);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .matching-item img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .matching-item.name-item {
+            text-align: center;
+            font-style: italic;
+            font-weight: 500;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Writing Practice */
+        .writing-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .writing-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .writing-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .writing-input-area {
+            padding: 2rem;
+        }
+
+        .writing-input-area label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .writing-input-area input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .writing-input-area input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45,90,39,0.1);
+        }
+
+        .writing-input-area input.correct {
+            border-color: var(--success);
+            background: rgba(76,175,80,0.1);
+        }
+
+        .writing-input-area input.incorrect {
+            border-color: var(--error);
+            background: rgba(244,67,54,0.1);
+        }
+
+        .writing-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .writing-feedback.show {
+            display: block;
+        }
+
+        .writing-feedback.correct {
+            background: rgba(76,175,80,0.15);
+            color: var(--success);
+        }
+
+        .writing-feedback.incorrect {
+            background: rgba(244,67,54,0.15);
+            color: var(--error);
+        }
+
+        .hint-text {
+            margin-top: 1rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45,90,39,0.3);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7cb342;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-card .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-body h2 {
+            color: var(--primary);
+            font-style: italic;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-body .info-item {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .modal-body .info-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .results-screen h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .results-screen .score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: var(--success);
+            margin: 2rem 0;
+        }
+
+        .results-screen .message {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.4rem;
+            }
+
+            nav {
+                padding: 0.8rem;
+            }
+
+            nav button {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .matching-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flashcard {
+                height: 350px;
+            }
+        }
+
+        /* Search */
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45,90,39,0.1);
+        }
+
+        /* Counter Badge */
+        .counter-badge {
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Örökzöld Növények</h1>
+        <p>Interaktív tanulói platform - 29 növényfaj</p>
+    </header>
+
+    <nav>
+        <button class="active" data-section="browse">Böngészés</button>
+        <button data-section="flashcard">Kártyák</button>
+        <button data-section="quiz">Kvíz</button>
+        <button data-section="matching">Párosítás</button>
+        <button data-section="writing">Írás</button>
+        <button data-section="stats">Statisztika</button>
+    </nav>
+
+    <main>
+        <!-- Browse Section -->
+        <section id="browse" class="section active">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Keresés latin név alapján...">
+            </div>
+            <div class="cards-grid" id="cardsGrid"></div>
+        </section>
+
+        <!-- Flashcard Section -->
+        <section id="flashcard" class="section">
+            <div class="flashcard-container">
+                <div class="counter-badge">
+                    <span id="flashcardCounter">1</span> / <span id="flashcardTotal">29</span>
+                </div>
+                <div class="flashcard" id="flashcardCard">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front">
+                            <img id="flashcardImg" src="" alt="Növény">
+                        </div>
+                        <div class="flashcard-back">
+                            <h2 id="flashcardName"></h2>
+                            <div class="info" id="flashcardInfo"></div>
+                        </div>
+                    </div>
+                </div>
+                <p class="flashcard-hint">Kattints a kártyára a megfordításhoz</p>
+                <div class="flashcard-controls">
+                    <button class="btn btn-outline" onclick="prevFlashcard()">Előző</button>
+                    <button class="btn btn-primary" onclick="shuffleFlashcards()">Keverés</button>
+                    <button class="btn btn-outline" onclick="nextFlashcard()">Következő</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="section">
+            <div class="quiz-container">
+                <div class="quiz-score">
+                    Pontszám: <span id="quizScore">0</span> / <span id="quizTotal">0</span>
+                </div>
+                <div class="quiz-card" id="quizCard">
+                    <img id="quizImg" src="" alt="Növény">
+                    <div class="quiz-options" id="quizOptions"></div>
+                </div>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn btn-primary" onclick="startQuiz()">Új kvíz indítása</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Matching Section -->
+        <section id="matching" class="section">
+            <div class="matching-container">
+                <div class="counter-badge">
+                    Párosítva: <span id="matchedCount">0</span> / <span id="matchTotal">6</span>
+                </div>
+                <div class="matching-grid">
+                    <div class="matching-column">
+                        <h3>Képek</h3>
+                        <div class="matching-items" id="matchingImages"></div>
+                    </div>
+                    <div class="matching-column">
+                        <h3>Nevek</h3>
+                        <div class="matching-items" id="matchingNames"></div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="startMatching()">Új játék</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Writing Section -->
+        <section id="writing" class="section">
+            <div class="writing-container">
+                <div class="counter-badge">
+                    Helyes: <span id="writingScore">0</span> / <span id="writingTotal">0</span>
+                </div>
+                <div class="writing-card">
+                    <img id="writingImg" src="" alt="Növény">
+                    <div class="writing-input-area">
+                        <label>Írd be a növény latin nevét:</label>
+                        <input type="text" id="writingInput" placeholder="pl. Pinus sylvestris" autocomplete="off">
+                        <div class="writing-feedback" id="writingFeedback"></div>
+                        <p class="hint-text" id="writingHint"></p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn btn-outline" onclick="showWritingHint()">Segítség</button>
+                    <button class="btn btn-secondary" onclick="skipWriting()">Kihagyás</button>
+                    <button class="btn btn-primary" onclick="checkWriting()">Ellenőrzés</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="stats" class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="statQuizzes">0</div>
+                    <div class="stat-label">Megoldott kvíz</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statCorrect">0</div>
+                    <div class="stat-label">Helyes válasz</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statAccuracy">0%</div>
+                    <div class="stat-label">Pontosság</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="statMatches">0</div>
+                    <div class="stat-label">Sikeres párosítás</div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-text">
+                    <span>Tanulási előrehaladás</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-outline" onclick="resetStats()">Statisztika törlése</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-content">
+            <img id="modalImg" src="" alt="Növény">
+            <div class="modal-body">
+                <h2 id="modalName"></h2>
+                <div class="info-item">
+                    <strong>Magasság / Virágzás</strong>
+                    <span id="modalHeight"></span>
+                </div>
+                <div class="info-item">
+                    <strong>Termőhelyi igény</strong>
+                    <span id="modalRequirements"></span>
+                </div>
+                <div class="info-item">
+                    <strong>Felhasználási mód</strong>
+                    <span id="modalUsage"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Plant data
+        const plants = [
+            { name: "Viburnum x pragense", height: "2-3m", requirements: "félárnyék, árnyék, pára", usage: "szoliter, csoport, edény, sövény", image: "Viburnum_pragense_2008_1734-r2-1200x630-proportionalsmallest.jpg" },
+            { name: "Platycladus orientalis", height: "5-10m", requirements: "víz, fény", usage: "parkfa", image: "platycladus-orientalis.jpg" },
+            { name: "Thuja occidentalis", height: "10-20m", requirements: "pára", usage: "csoport, sövény", image: "Northern_Whitecedar_(Thuja_occidentalis),_Tettegouche_State_Park,_Minnesota_1.jpg" },
+            { name: "Prunus laurocerasus", height: "apró fehér, V. hó", requirements: "félárnyék, kötöttebb éde talaj, párás levegő", usage: "szoliter, csoportos", image: "prunus-laurocerasus_1.jpg" },
+            { name: "Pinus sylvestris", height: "20-40m", requirements: "ellenálló", usage: "parkfa", image: "Pinus_sylvestris_Erdeifenyo2.jpg.webp" },
+            { name: "Pinus strobus", height: "25-50m", requirements: "pára, mészérzékeny", usage: "parkfa", image: "pinus-strobus.jpg" },
+            { name: "Pinus nigra", height: "20-50m", requirements: "ellenálló", usage: "szoliter, sorfa", image: "pinus_nigra_subsp__nigra-1.jpg" },
+            { name: "Picea pungens", height: "30-50m", requirements: "pára", usage: "szoliter, csoport", image: "picea_pungens_hoopsii_2.jpg" },
+            { name: "Picea omorika", height: "30m", requirements: "ellenálló", usage: "parkfa, sövény", image: "Picea_omorika_seed_cones.jpg" },
+            { name: "Picea abies", height: "25-50m", requirements: "víz, pára", usage: "szoliter", image: "picea_abies.jpg" },
+            { name: "Phyllostachys viridis", height: "50-60 évente virágzik", requirements: "meleg, napfény, félárnyék", usage: "szoliter, csoportos", image: "Phyllostachys viridis.webp" },
+            { name: "Photinia fraseri", height: "fehér, krémszínű, IV.-V. hó", requirements: "nap, félárnyék, tápanyagban gazdag talaj", usage: "szoliter, sövény", image: "photinia_x_fraseri_carre_rouge_korallberkenye.jpg.webp" },
+            { name: "Mahonia aquifolium", height: "sárga, kívül kissé piros, IV.-V. hó", requirements: "igénytelen, félárnyék", usage: "szoliter, csoportos, talajtakaró", image: "Mahonia_aquifolium_Kozonseges_Mahonia.jpg.webp" },
+            { name: "Magnolia grandiflora", height: "nagy fehér V.-VII. hó", requirements: "nap, félárnyék, savanyú, laza talaj", usage: "szoliter, parkokba, kertekbe", image: "magnolia-grandiflora1.jpg.webp" },
+            { name: "Lonicera nitida", height: "apró fehér, V. hó", requirements: "vízigényes, védett félárnyék", usage: "talajtakaró, sövény", image: "lonicera_nitida_twiggy_talajtakaro_mirtuszlonc.jpg.webp" },
+            { name: "Juniperus communis", height: "10m", requirements: "ellenálló", usage: "szoliter, sövény", image: "Juniperus_communis_Finland_2006.jpg" },
+            { name: "Juniperus chinensis", height: "2-8m", requirements: "ellenálló", usage: "csoport, sövény, szoliter", image: "Juniperus chinensis.jfif" },
+            { name: "Ilex aquifolium", height: "fehér, V.-VI. hó", requirements: "félárnyék, árnyék, humuszos talaj", usage: "sövény, csoportos", image: "Ilexaquifolium.webp" },
+            { name: "Hebe sp.", height: "fehér, rózsaszín, lila, kék VI.-IX. hó", requirements: "nap, félárnyék, jó vízlevezetés", usage: "sziklakert, szegélynövény", image: "Hebe_sp_3940_flower_.jpg" },
+            { name: "Euonymus japonicus", height: "jelentéktelen, apró, sárga", requirements: "közepes víz, félárnyék", usage: "szoliter, sövény, csoportos", image: "euonymus_japonicus_white_spire_japan_kecskerago.jpg.webp" },
+            { name: "Euonymus fortunei", height: "apró zöldes-fehér, VI.-VII. hó", requirements: "igénytelen, félárnyékos", usage: "talajtakaró, edényes növény", image: "euonymus_fortunei_canadale_gold.jpg.webp" },
+            { name: "Cotoneaster dammeri", height: "apró fehér, VI. hó", requirements: "félárnyék, éde talaj, vízigényes", usage: "rézsűk, sziklakertek", image: "cotoneaster_dammeri_major_nagylevelu_madarbirs.jpg.webp" },
+            { name: "Chamaecyparis lawsoniana", height: "25-40m, toboz", requirements: "pára, víz", usage: "szoliter, csoport", image: "chamaecyparis_lawsoniana.jpg" },
+            { name: "Cedrus libani subsp. atlantica", height: "30-40m", requirements: "pára", usage: "szoliter", image: "cedrus-atlantica-glauca-blue-atlas-cedar-tree-foliage-leaves-needles-and-cones-scaled.jpg" },
+            { name: "Buxus sempervirens", height: "jelentéktelen, IV.-V. hó", requirements: "igénytelen, humuszos talaj, párás levegő", usage: "szoliter, csoportos, kastélykertek", image: "buxus-megyeri-kerteszet.JPG.webp" },
+            { name: "Berberis julianae", height: "aranysárga, IV.-V. hó", requirements: "igénytelen, fagytűrő", usage: "szoliter, sövény, csoportos", image: "berberis-julianae-1.jpg" },
+            { name: "Aucuba japonica", height: "jelentéktelen", requirements: "félárnyék, árnyék, párás környezet", usage: "szoliter, csoportos", image: "Aucuba-japonica-form-june-2017.jpg" },
+            { name: "Abies nordmanniana", height: "20-30m", requirements: "igénytelen, fagytűrő", usage: "szoliter", image: "nordmanniana02.jpg" },
+            { name: "Abies concolor", height: "25-40m", requirements: "ellenálló", usage: "szoliter", image: "Abies-concolor-Candicans-White-Fir.webp" }
+        ];
+
+        // State
+        let currentFlashcard = 0;
+        let flashcardOrder = [...Array(plants.length).keys()];
+        let quizScore = 0;
+        let quizTotal = 0;
+        let writingScore = 0;
+        let writingTotal = 0;
+        let currentWritingPlant = null;
+        let matchingSelected = null;
+        let matchedPairs = 0;
+        let matchingPlants = [];
+
+        // Stats from localStorage
+        let stats = JSON.parse(localStorage.getItem('plantStats')) || {
+            quizzes: 0,
+            correct: 0,
+            total: 0,
+            matches: 0,
+            learnedPlants: []
+        };
+
+        // Navigation
+        document.querySelectorAll('nav button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(btn.dataset.section).classList.add('active');
+
+                // Initialize sections
+                if (btn.dataset.section === 'flashcard') initFlashcard();
+                if (btn.dataset.section === 'quiz') startQuiz();
+                if (btn.dataset.section === 'matching') startMatching();
+                if (btn.dataset.section === 'writing') startWriting();
+                if (btn.dataset.section === 'stats') updateStats();
+            });
+        });
+
+        // Browse Section
+        function renderCards(filter = '') {
+            const grid = document.getElementById('cardsGrid');
+            const filtered = plants.filter(p =>
+                p.name.toLowerCase().includes(filter.toLowerCase())
+            );
+
+            grid.innerHTML = filtered.map((plant, i) => `
+                <div class="plant-card" onclick="showDetail(${plants.indexOf(plant)})">
+                    <img src="${plant.image}" alt="${plant.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/><text x=%22150%22 y=%22100%22 text-anchor=%22middle%22 fill=%22%23999%22>Kép</text></svg>'">
+                    <div class="card-content">
+                        <h3>${plant.name}</h3>
+                        <div class="details">
+                            <p><strong>Magasság:</strong> ${plant.height}</p>
+                            <p><strong>Felhasználás:</strong> ${plant.usage}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            renderCards(e.target.value);
+        });
+
+        // Detail Modal
+        function showDetail(index) {
+            const plant = plants[index];
+            document.getElementById('modalImg').src = plant.image;
+            document.getElementById('modalName').textContent = plant.name;
+            document.getElementById('modalHeight').textContent = plant.height;
+            document.getElementById('modalRequirements').textContent = plant.requirements;
+            document.getElementById('modalUsage').textContent = plant.usage;
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeModal();
+        });
+
+        // Flashcard Section
+        function initFlashcard() {
+            updateFlashcard();
+        }
+
+        function updateFlashcard() {
+            const plant = plants[flashcardOrder[currentFlashcard]];
+            document.getElementById('flashcardImg').src = plant.image;
+            document.getElementById('flashcardName').textContent = plant.name;
+            document.getElementById('flashcardInfo').innerHTML = `
+                <p><strong>Magasság:</strong> ${plant.height}</p>
+                <p><strong>Igény:</strong> ${plant.requirements}</p>
+                <p><strong>Felhasználás:</strong> ${plant.usage}</p>
+            `;
+            document.getElementById('flashcardCounter').textContent = currentFlashcard + 1;
+            document.getElementById('flashcardTotal').textContent = plants.length;
+            document.getElementById('flashcardCard').classList.remove('flipped');
+        }
+
+        function flipCard(event) {
+            if (event) event.stopPropagation();
+            const flashcard = document.getElementById('flashcardCard');
+            flashcard.classList.toggle('flipped');
+        }
+
+        function nextFlashcard() {
+            currentFlashcard = (currentFlashcard + 1) % plants.length;
+            updateFlashcard();
+        }
+
+        function prevFlashcard() {
+            currentFlashcard = (currentFlashcard - 1 + plants.length) % plants.length;
+            updateFlashcard();
+        }
+
+        function shuffleFlashcards() {
+            flashcardOrder = flashcardOrder.sort(() => Math.random() - 0.5);
+            currentFlashcard = 0;
+            updateFlashcard();
+        }
+
+        // Quiz Section
+        function startQuiz() {
+            quizScore = 0;
+            quizTotal = 0;
+            document.getElementById('quizScore').textContent = quizScore;
+            document.getElementById('quizTotal').textContent = quizTotal;
+            nextQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            const correctIndex = Math.floor(Math.random() * plants.length);
+            const correct = plants[correctIndex];
+
+            let options = [correct];
+            while (options.length < 4) {
+                const random = plants[Math.floor(Math.random() * plants.length)];
+                if (!options.includes(random)) options.push(random);
+            }
+            options = options.sort(() => Math.random() - 0.5);
+
+            document.getElementById('quizImg').src = correct.image;
+            document.getElementById('quizOptions').innerHTML = options.map(opt => `
+                <button class="quiz-option" onclick="checkQuiz(this, '${opt.name}', '${correct.name}')">
+                    ${opt.name}
+                </button>
+            `).join('');
+        }
+
+        function checkQuiz(btn, selected, correct) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.textContent.trim() === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            quizTotal++;
+            if (selected === correct) {
+                quizScore++;
+                btn.classList.add('correct');
+                markPlantLearned(correct);
+            } else {
+                btn.classList.add('incorrect');
+            }
+
+            document.getElementById('quizScore').textContent = quizScore;
+            document.getElementById('quizTotal').textContent = quizTotal;
+
+            stats.total++;
+            if (selected === correct) stats.correct++;
+            saveStats();
+
+            setTimeout(nextQuizQuestion, 1500);
+        }
+
+        // Matching Game
+        function startMatching() {
+            matchedPairs = 0;
+            matchingSelected = null;
+
+            // Select 6 random plants
+            matchingPlants = [...plants].sort(() => Math.random() - 0.5).slice(0, 6);
+
+            const imagesDiv = document.getElementById('matchingImages');
+            const namesDiv = document.getElementById('matchingNames');
+
+            const shuffledImages = [...matchingPlants].sort(() => Math.random() - 0.5);
+            const shuffledNames = [...matchingPlants].sort(() => Math.random() - 0.5);
+
+            imagesDiv.innerHTML = shuffledImages.map((p, i) => `
+                <div class="matching-item" data-name="${p.name}" onclick="selectMatching(this, 'image')">
+                    <img src="${p.image}" alt="Növény">
+                </div>
+            `).join('');
+
+            namesDiv.innerHTML = shuffledNames.map((p, i) => `
+                <div class="matching-item name-item" data-name="${p.name}" onclick="selectMatching(this, 'name')">
+                    ${p.name}
+                </div>
+            `).join('');
+
+            document.getElementById('matchedCount').textContent = 0;
+            document.getElementById('matchTotal').textContent = 6;
+        }
+
+        function selectMatching(element, type) {
+            if (element.classList.contains('matched')) return;
+
+            if (!matchingSelected) {
+                matchingSelected = { element, type, name: element.dataset.name };
+                element.classList.add('selected');
+            } else if (matchingSelected.type === type) {
+                matchingSelected.element.classList.remove('selected');
+                matchingSelected = { element, type, name: element.dataset.name };
+                element.classList.add('selected');
+            } else {
+                // Check match
+                if (matchingSelected.name === element.dataset.name) {
+                    matchingSelected.element.classList.remove('selected');
+                    matchingSelected.element.classList.add('matched');
+                    element.classList.add('matched');
+                    matchedPairs++;
+                    document.getElementById('matchedCount').textContent = matchedPairs;
+                    stats.matches++;
+                    markPlantLearned(element.dataset.name);
+                    saveStats();
+
+                    if (matchedPairs === 6) {
+                        setTimeout(() => alert('Gratulálok! Minden párt megtaláltál!'), 300);
+                    }
+                } else {
+                    element.classList.add('wrong');
+                    matchingSelected.element.classList.add('wrong');
+                    setTimeout(() => {
+                        element.classList.remove('wrong');
+                        matchingSelected.element.classList.remove('wrong', 'selected');
+                        matchingSelected = null;
+                    }, 500);
+                    return;
+                }
+                matchingSelected = null;
+            }
+        }
+
+        // Writing Practice
+        function startWriting() {
+            writingScore = 0;
+            writingTotal = 0;
+            document.getElementById('writingScore').textContent = writingScore;
+            document.getElementById('writingTotal').textContent = writingTotal;
+            nextWritingQuestion();
+        }
+
+        function nextWritingQuestion() {
+            currentWritingPlant = plants[Math.floor(Math.random() * plants.length)];
+            document.getElementById('writingImg').src = currentWritingPlant.image;
+            document.getElementById('writingInput').value = '';
+            document.getElementById('writingInput').className = '';
+            document.getElementById('writingFeedback').className = 'writing-feedback';
+            document.getElementById('writingHint').textContent = '';
+        }
+
+        function checkWriting() {
+            const input = document.getElementById('writingInput');
+            const feedback = document.getElementById('writingFeedback');
+            const answer = input.value.trim().toLowerCase();
+            const correct = currentWritingPlant.name.toLowerCase();
+
+            writingTotal++;
+            document.getElementById('writingTotal').textContent = writingTotal;
+
+            if (answer === correct) {
+                input.classList.add('correct');
+                feedback.textContent = 'Helyes!';
+                feedback.className = 'writing-feedback show correct';
+                writingScore++;
+                document.getElementById('writingScore').textContent = writingScore;
+                markPlantLearned(currentWritingPlant.name);
+                stats.correct++;
+            } else {
+                input.classList.add('incorrect');
+                feedback.textContent = `Helytelen. A helyes válasz: ${currentWritingPlant.name}`;
+                feedback.className = 'writing-feedback show incorrect';
+            }
+
+            stats.total++;
+            saveStats();
+
+            setTimeout(nextWritingQuestion, 2000);
+        }
+
+        function showWritingHint() {
+            const hint = document.getElementById('writingHint');
+            const name = currentWritingPlant.name;
+            const revealed = name.substring(0, Math.ceil(name.length / 2));
+            hint.textContent = `Segítség: ${revealed}...`;
+        }
+
+        function skipWriting() {
+            document.getElementById('writingFeedback').textContent = `Kihagyva. A válasz: ${currentWritingPlant.name}`;
+            document.getElementById('writingFeedback').className = 'writing-feedback show incorrect';
+            setTimeout(nextWritingQuestion, 1500);
+        }
+
+        document.getElementById('writingInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkWriting();
+        });
+
+        // Statistics
+        function markPlantLearned(name) {
+            if (!stats.learnedPlants.includes(name)) {
+                stats.learnedPlants.push(name);
+            }
+            saveStats();
+        }
+
+        function updateStats() {
+            document.getElementById('statQuizzes').textContent = stats.quizzes || Math.floor(stats.total / 10);
+            document.getElementById('statCorrect').textContent = stats.correct;
+            const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+            document.getElementById('statAccuracy').textContent = accuracy + '%';
+            document.getElementById('statMatches').textContent = stats.matches;
+
+            const progress = Math.round((stats.learnedPlants.length / plants.length) * 100);
+            document.getElementById('progressPercent').textContent = progress + '%';
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function saveStats() {
+            localStorage.setItem('plantStats', JSON.stringify(stats));
+        }
+
+        function resetStats() {
+            if (confirm('Biztosan törölni szeretnéd a statisztikákat?')) {
+                stats = { quizzes: 0, correct: 0, total: 0, matches: 0, learnedPlants: [] };
+                saveStats();
+                updateStats();
+            }
+        }
+
+        // Initialize
+        renderCards();
+
+        // Flashcard click event
+        document.getElementById('flashcardCard').addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('flipped');
+        });
+
+        // Pre-initialize flashcard
+        initFlashcard();
+    </script>
+</body>
+</html>
