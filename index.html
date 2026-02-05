@@ -23,6 +23,7 @@
             --card-bg: #ffffff;
             --text: #333333;
             --text-light: #666666;
+            --streak: #ffc107;
         }
 
         body {
@@ -36,21 +37,48 @@
         header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
-            padding: 1.5rem 2rem;
+            padding: 1rem 2rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: sticky;
             top: 0;
             z-index: 100;
         }
 
-        header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.3rem;
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        header p {
+        header h1 {
+            font-size: 1.6rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .streak-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .streak-display .fire {
+            font-size: 1.2rem;
+        }
+
+        .mastery-display {
+            font-size: 0.9rem;
             opacity: 0.9;
-            font-size: 0.95rem;
         }
 
         /* Navigation */
@@ -65,11 +93,11 @@
         }
 
         nav button {
-            padding: 0.8rem 1.5rem;
+            padding: 0.7rem 1.2rem;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.3s ease;
             background: var(--bg);
@@ -92,7 +120,7 @@
         main {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .section {
@@ -101,11 +129,11 @@
 
         .section.active {
             display: block;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -114,16 +142,16 @@
             background: white;
             border-radius: 15px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .progress-bar {
-            height: 12px;
+            height: 10px;
             background: #e0e0e0;
             border-radius: 10px;
             overflow: hidden;
-            margin-top: 0.8rem;
+            margin-top: 0.5rem;
         }
 
         .progress-fill {
@@ -136,15 +164,15 @@
         .progress-text {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-light);
         }
 
-        /* Cards Grid for Browse Mode */
+        /* Cards Grid */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.2rem;
         }
 
         .plant-card {
@@ -154,6 +182,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
 
         .plant-card:hover {
@@ -163,32 +192,44 @@
 
         .plant-card img {
             width: 100%;
-            height: 200px;
+            height: 180px;
             object-fit: cover;
         }
 
         .plant-card .card-content {
-            padding: 1.2rem;
+            padding: 1rem;
         }
 
         .plant-card h3 {
             color: var(--primary);
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-style: italic;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
         }
 
         .plant-card .details {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-light);
         }
 
-        .plant-card .details p {
-            margin: 0.3rem 0;
+        .plant-card .mastery-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
-        .plant-card .details strong {
-            color: var(--text);
+        .plant-card .mastery-badge.learning {
+            background: var(--accent);
+        }
+
+        .plant-card .mastery-badge.new {
+            background: var(--text-light);
         }
 
         /* Flashcard Mode */
@@ -196,13 +237,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .flashcard {
             width: 100%;
-            max-width: 500px;
-            height: 400px;
+            max-width: 480px;
+            height: 380px;
             cursor: pointer;
             perspective: 1000px;
         }
@@ -211,7 +252,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.6s;
+            transition: transform 0.5s;
             transform-style: preserve-3d;
         }
 
@@ -246,27 +287,27 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1.5rem;
             color: white;
             text-align: center;
             transform: rotateY(180deg);
         }
 
         .flashcard-back h2 {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-style: italic;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .flashcard-back .info {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            opacity: 0.95;
+            line-height: 1.5;
         }
 
         .flashcard-controls {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
             justify-content: center;
         }
@@ -274,14 +315,72 @@
         .flashcard-hint {
             text-align: center;
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        .confidence-buttons {
+            display: flex;
+            gap: 1rem;
             margin-top: 1rem;
+        }
+
+        .confidence-buttons button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dont-know {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-know {
+            background: var(--success);
+            color: white;
+        }
+
+        .confidence-buttons button:hover {
+            transform: scale(1.05);
         }
 
         /* Quiz Mode */
         .quiz-container {
-            max-width: 700px;
+            max-width: 650px;
             margin: 0 auto;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.8rem 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .quiz-progress {
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .quiz-progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .quiz-progress-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s ease;
         }
 
         .quiz-card {
@@ -293,26 +392,38 @@
 
         .quiz-card img {
             width: 100%;
-            height: 350px;
+            height: 300px;
             object-fit: cover;
         }
 
         .quiz-options {
-            padding: 1.5rem;
+            padding: 1.2rem;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.6rem;
         }
 
         .quiz-option {
-            padding: 1rem 1.5rem;
+            padding: 0.9rem 1.2rem;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
             background: white;
             text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .quiz-option .key-hint {
+            background: var(--bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--text-light);
         }
 
         .quiz-option:hover:not(.disabled) {
@@ -334,20 +445,65 @@
 
         .quiz-option.disabled {
             cursor: not-allowed;
-            opacity: 0.7;
         }
 
-        .quiz-score {
-            text-align: center;
+        .quiz-feedback {
             padding: 1rem;
-            font-size: 1.1rem;
-            color: var(--text-light);
+            text-align: center;
+            display: none;
         }
 
-        .quiz-score span {
-            color: var(--primary);
+        .quiz-feedback.show {
+            display: block;
+        }
+
+        .quiz-feedback .correct-answer {
             font-weight: bold;
-            font-size: 1.3rem;
+            font-style: italic;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-next-btn {
+            margin-top: 1rem;
+            padding: 0.8rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-next-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .quiz-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 12px;
+        }
+
+        .quiz-stat {
+            text-align: center;
+        }
+
+        .quiz-stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .quiz-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
         }
 
         /* Matching Game */
@@ -359,7 +515,7 @@
         .matching-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
         }
 
         .matching-column h3 {
@@ -371,16 +527,16 @@
         .matching-items {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.6rem;
         }
 
         .matching-item {
             background: white;
             border: 3px solid transparent;
             border-radius: 12px;
-            padding: 0.8rem;
+            padding: 0.6rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
@@ -401,19 +557,19 @@
         }
 
         .matching-item.wrong {
-            animation: shake 0.5s ease;
+            animation: shake 0.4s ease;
             border-color: var(--error);
         }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
         .matching-item img {
             width: 100%;
-            height: 100px;
+            height: 80px;
             object-fit: cover;
             border-radius: 8px;
         }
@@ -422,15 +578,16 @@
             text-align: center;
             font-style: italic;
             font-weight: 500;
-            min-height: 60px;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.9rem;
         }
 
         /* Writing Practice */
         .writing-container {
-            max-width: 600px;
+            max-width: 550px;
             margin: 0 auto;
         }
 
@@ -443,25 +600,25 @@
 
         .writing-card img {
             width: 100%;
-            height: 350px;
+            height: 300px;
             object-fit: cover;
         }
 
         .writing-input-area {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .writing-input-area label {
             display: block;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.6rem;
             font-weight: 500;
             color: var(--text-light);
         }
 
         .writing-input-area input {
             width: 100%;
-            padding: 1rem 1.2rem;
-            font-size: 1.1rem;
+            padding: 0.9rem 1rem;
+            font-size: 1rem;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             outline: none;
@@ -505,20 +662,45 @@
             color: var(--error);
         }
 
-        .hint-text {
+        .writing-correct-answer {
+            margin-top: 0.5rem;
+            font-weight: bold;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .writing-controls {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.2rem;
+        }
+
+        .writing-next-btn {
+            display: none;
             margin-top: 1rem;
+        }
+
+        .writing-next-btn.show {
+            display: inline-block;
+        }
+
+        .hint-text {
+            margin-top: 0.8rem;
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-align: center;
         }
 
         /* Buttons */
         .btn {
-            padding: 0.9rem 2rem;
+            padding: 0.8rem 1.5rem;
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 500;
             transition: all 0.3s ease;
         }
@@ -558,29 +740,87 @@
         /* Statistics */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-card {
             background: white;
             border-radius: 15px;
-            padding: 1.5rem;
+            padding: 1.2rem;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
 
         .stat-card .stat-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
             color: var(--primary);
         }
 
         .stat-card .stat-label {
             color: var(--text-light);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Difficulty indicators */
+        .difficulty-section {
+            margin-top: 1.5rem;
+        }
+
+        .difficulty-section h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .difficulty-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: white;
+            border-radius: 10px;
             font-size: 0.9rem;
-            margin-top: 0.5rem;
+        }
+
+        .difficulty-item .name {
+            font-style: italic;
+        }
+
+        .difficulty-item .score {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .difficulty-item .score-bar {
+            width: 100px;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .difficulty-item .score-fill {
+            height: 100%;
+            background: var(--success);
+            transition: width 0.3s ease;
+        }
+
+        .difficulty-item .score-fill.medium {
+            background: var(--accent);
+        }
+
+        .difficulty-item .score-fill.hard {
+            background: var(--error);
         }
 
         /* Modal */
@@ -605,7 +845,7 @@
         .modal-content {
             background: white;
             border-radius: 20px;
-            max-width: 600px;
+            max-width: 550px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -619,23 +859,23 @@
 
         .modal-content img {
             width: 100%;
-            height: 300px;
+            height: 250px;
             object-fit: cover;
         }
 
         .modal-body {
-            padding: 2rem;
+            padding: 1.5rem;
         }
 
         .modal-body h2 {
             color: var(--primary);
             font-style: italic;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .modal-body .info-item {
-            margin: 1rem 0;
-            padding: 1rem;
+            margin: 0.8rem 0;
+            padding: 0.8rem;
             background: var(--bg);
             border-radius: 10px;
         }
@@ -643,90 +883,35 @@
         .modal-body .info-item strong {
             color: var(--primary);
             display: block;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.2rem;
+            font-size: 0.85rem;
         }
 
         .modal-close {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: white;
             border: none;
             border-radius: 50%;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        /* Results Screen */
-        .results-screen {
-            text-align: center;
-            padding: 3rem;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .results-screen h2 {
-            color: var(--primary);
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .results-screen .score {
-            font-size: 4rem;
-            font-weight: bold;
-            color: var(--success);
-            margin: 2rem 0;
-        }
-
-        .results-screen .message {
-            font-size: 1.2rem;
-            color: var(--text-light);
-            margin-bottom: 2rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 1.4rem;
-            }
-
-            nav {
-                padding: 0.8rem;
-            }
-
-            nav button {
-                padding: 0.6rem 1rem;
-                font-size: 0.85rem;
-            }
-
-            main {
-                padding: 1rem;
-            }
-
-            .matching-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .flashcard {
-                height: 350px;
-            }
-        }
-
         /* Search */
         .search-container {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
 
         .search-container input {
             width: 100%;
-            padding: 1rem 1.5rem;
+            padding: 0.9rem 1.2rem;
             border: 2px solid #e0e0e0;
             border-radius: 30px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
             transition: all 0.3s ease;
         }
@@ -740,18 +925,123 @@
         .counter-badge {
             background: var(--accent);
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: inline-block;
             margin-bottom: 1rem;
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Results overlay */
+        .results-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .results-overlay.show {
+            display: flex;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: modalIn 0.3s ease;
+        }
+
+        .results-card h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .results-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success);
+            margin: 1rem 0;
+        }
+
+        .results-message {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: center;
+            }
+
+            nav {
+                padding: 0.6rem;
+            }
+
+            nav button {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .matching-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .flashcard {
+                height: 320px;
+            }
+
+            .quiz-card img {
+                height: 220px;
+            }
+
+            .keyboard-hint {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Örökzöld Növények</h1>
-        <p>Interaktív tanulói platform - 29 növényfaj</p>
+        <div class="header-content">
+            <h1>Örökzöld Növények</h1>
+            <div class="header-stats">
+                <div class="streak-display">
+                    <span class="fire">&#128293;</span>
+                    <span id="streakCount">0</span> sorozat
+                </div>
+                <div class="mastery-display">
+                    <span id="masteryCount">0</span>/29 elsajátítva
+                </div>
+            </div>
+        </div>
     </header>
 
     <nav>
@@ -789,28 +1079,58 @@
                         </div>
                     </div>
                 </div>
-                <p class="flashcard-hint">Kattints a kártyára a megfordításhoz</p>
-                <div class="flashcard-controls">
-                    <button class="btn btn-outline" onclick="prevFlashcard()">Előző</button>
-                    <button class="btn btn-primary" onclick="shuffleFlashcards()">Keverés</button>
-                    <button class="btn btn-outline" onclick="nextFlashcard()">Következő</button>
+                <p class="flashcard-hint">Kattints a kártyára vagy nyomj SPACE-t</p>
+                <div class="confidence-buttons" id="confidenceButtons" style="display: none;">
+                    <button class="btn-dont-know" onclick="rateFlashcard(false)">Nem tudom</button>
+                    <button class="btn-know" onclick="rateFlashcard(true)">Tudom</button>
                 </div>
+                <div class="flashcard-controls" id="flashcardNav">
+                    <button class="btn btn-outline" onclick="prevFlashcard()">&#8592; Előző</button>
+                    <button class="btn btn-primary" onclick="shuffleFlashcards()">Keverés</button>
+                    <button class="btn btn-outline" onclick="nextFlashcard()">Következő &#8594;</button>
+                </div>
+                <p class="keyboard-hint">Billentyűk: &#8592; &#8594; navigáció, SPACE megfordítás</p>
             </div>
         </section>
 
         <!-- Quiz Section -->
         <section id="quiz" class="section">
             <div class="quiz-container">
-                <div class="quiz-score">
-                    Pontszám: <span id="quizScore">0</span> / <span id="quizTotal">0</span>
+                <div class="quiz-header">
+                    <span id="quizQuestionNum">1/10</span>
+                    <div class="quiz-progress">
+                        <div class="quiz-progress-bar">
+                            <div class="quiz-progress-fill" id="quizProgressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <span id="quizScoreDisplay">0 pont</span>
                 </div>
                 <div class="quiz-card" id="quizCard">
                     <img id="quizImg" src="" alt="Növény">
                     <div class="quiz-options" id="quizOptions"></div>
+                    <div class="quiz-feedback" id="quizFeedback">
+                        <div class="correct-answer" id="quizCorrectAnswer"></div>
+                        <button class="quiz-next-btn" onclick="nextQuizQuestion()">Következő (SPACE)</button>
+                    </div>
                 </div>
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <button class="btn btn-primary" onclick="startQuiz()">Új kvíz indítása</button>
+                <div class="quiz-stats">
+                    <div class="quiz-stat">
+                        <div class="quiz-stat-value" id="quizCorrectCount">0</div>
+                        <div class="quiz-stat-label">Helyes</div>
+                    </div>
+                    <div class="quiz-stat">
+                        <div class="quiz-stat-value" id="quizWrongCount">0</div>
+                        <div class="quiz-stat-label">Hibás</div>
+                    </div>
+                    <div class="quiz-stat">
+                        <div class="quiz-stat-value" id="quizStreakDisplay">0</div>
+                        <div class="quiz-stat-label">Sorozat</div>
+                    </div>
                 </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="startQuiz()">Új kvíz</button>
+                </div>
+                <p class="keyboard-hint">Billentyűk: 1-4 válasz, SPACE következő</p>
             </div>
         </section>
 
@@ -830,7 +1150,7 @@
                         <div class="matching-items" id="matchingNames"></div>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 2rem;">
+                <div style="text-align: center; margin-top: 1.5rem;">
                     <button class="btn btn-primary" onclick="startMatching()">Új játék</button>
                 </div>
             </div>
@@ -848,14 +1168,17 @@
                         <label>Írd be a növény latin nevét:</label>
                         <input type="text" id="writingInput" placeholder="pl. Pinus sylvestris" autocomplete="off">
                         <div class="writing-feedback" id="writingFeedback"></div>
+                        <div class="writing-correct-answer" id="writingCorrectAnswer" style="display: none;"></div>
                         <p class="hint-text" id="writingHint"></p>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 1.5rem;">
+                <div class="writing-controls" id="writingControls">
                     <button class="btn btn-outline" onclick="showWritingHint()">Segítség</button>
                     <button class="btn btn-secondary" onclick="skipWriting()">Kihagyás</button>
-                    <button class="btn btn-primary" onclick="checkWriting()">Ellenőrzés</button>
+                    <button class="btn btn-primary" id="writingCheckBtn" onclick="checkWriting()">Ellenőrzés</button>
+                    <button class="btn btn-primary writing-next-btn" id="writingNextBtn" onclick="nextWritingQuestion()">Következő &#8594;</button>
                 </div>
+                <p class="keyboard-hint">ENTER: ellenőrzés/következő</p>
             </div>
         </section>
 
@@ -863,8 +1186,8 @@
         <section id="stats" class="section">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-value" id="statQuizzes">0</div>
-                    <div class="stat-label">Megoldott kvíz</div>
+                    <div class="stat-value" id="statStreak">0</div>
+                    <div class="stat-label">Legjobb sorozat</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="statCorrect">0</div>
@@ -875,8 +1198,8 @@
                     <div class="stat-label">Pontosság</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="statMatches">0</div>
-                    <div class="stat-label">Sikeres párosítás</div>
+                    <div class="stat-value" id="statMastered">0</div>
+                    <div class="stat-label">Elsajátítva</div>
                 </div>
             </div>
             <div class="progress-container">
@@ -888,7 +1211,11 @@
                     <div class="progress-fill" id="progressFill" style="width: 0%"></div>
                 </div>
             </div>
-            <div style="text-align: center;">
+            <div class="difficulty-section">
+                <h3>Nehézség szerint</h3>
+                <div class="difficulty-list" id="difficultyList"></div>
+            </div>
+            <div style="text-align: center; margin-top: 1.5rem;">
                 <button class="btn btn-outline" onclick="resetStats()">Statisztika törlése</button>
             </div>
         </section>
@@ -902,7 +1229,7 @@
             <div class="modal-body">
                 <h2 id="modalName"></h2>
                 <div class="info-item">
-                    <strong>Magasság / Virágzás</strong>
+                    <strong>Tulajdonságok</strong>
                     <span id="modalHeight"></span>
                 </div>
                 <div class="info-item">
@@ -910,10 +1237,20 @@
                     <span id="modalRequirements"></span>
                 </div>
                 <div class="info-item">
-                    <strong>Felhasználási mód</strong>
+                    <strong>Felhasználás</strong>
                     <span id="modalUsage"></span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Results Overlay -->
+    <div class="results-overlay" id="resultsOverlay">
+        <div class="results-card">
+            <h2 id="resultsTitle">Kvíz vége!</h2>
+            <div class="results-score" id="resultsScore">0%</div>
+            <p class="results-message" id="resultsMessage">Szép munka!</p>
+            <button class="btn btn-primary" onclick="closeResults()">Folytatás</button>
         </div>
     </div>
 
@@ -954,34 +1291,73 @@
         // State
         let currentFlashcard = 0;
         let flashcardOrder = [...Array(plants.length).keys()];
+        let currentStreak = 0;
+        let bestStreak = 0;
+
+        // Quiz state
         let quizScore = 0;
         let quizTotal = 0;
+        let quizCorrect = 0;
+        let quizWrong = 0;
+        let quizStreak = 0;
+        let quizQuestionNum = 0;
+        let quizMaxQuestions = 10;
+        let quizWaitingForNext = false;
+        let quizCurrentCorrect = null;
+        let quizWrongPlants = []; // Plants answered incorrectly
+        let quizCorrectPlants = []; // Plants answered correctly in this session
+
+        // Writing state
         let writingScore = 0;
         let writingTotal = 0;
         let currentWritingPlant = null;
+        let writingChecked = false;
+        let writingWrongPlants = [];
+
+        // Matching state
         let matchingSelected = null;
         let matchedPairs = 0;
         let matchingPlants = [];
 
+        // Plant difficulty tracking
+        let plantStats = {};
+        plants.forEach(p => {
+            plantStats[p.name] = { correct: 0, wrong: 0, lastSeen: 0 };
+        });
+
         // Stats from localStorage
-        let stats = JSON.parse(localStorage.getItem('plantStats')) || {
-            quizzes: 0,
+        let stats = JSON.parse(localStorage.getItem('plantStats2')) || {
             correct: 0,
             total: 0,
-            matches: 0,
-            learnedPlants: []
+            bestStreak: 0,
+            plantStats: plantStats,
+            masteredPlants: []
         };
+
+        // Merge saved plant stats
+        if (stats.plantStats) {
+            Object.keys(stats.plantStats).forEach(name => {
+                if (plantStats[name]) {
+                    plantStats[name] = stats.plantStats[name];
+                }
+            });
+        }
+
+        // Update header displays
+        function updateHeaderStats() {
+            document.getElementById('streakCount').textContent = currentStreak;
+            const mastered = Object.values(plantStats).filter(p => p.correct >= 3 && p.correct > p.wrong).length;
+            document.getElementById('masteryCount').textContent = mastered;
+        }
 
         // Navigation
         document.querySelectorAll('nav button').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
                 document.getElementById(btn.dataset.section).classList.add('active');
 
-                // Initialize sections
                 if (btn.dataset.section === 'flashcard') initFlashcard();
                 if (btn.dataset.section === 'quiz') startQuiz();
                 if (btn.dataset.section === 'matching') startMatching();
@@ -993,22 +1369,30 @@
         // Browse Section
         function renderCards(filter = '') {
             const grid = document.getElementById('cardsGrid');
-            const filtered = plants.filter(p =>
-                p.name.toLowerCase().includes(filter.toLowerCase())
-            );
+            const filtered = plants.filter(p => p.name.toLowerCase().includes(filter.toLowerCase()));
 
-            grid.innerHTML = filtered.map((plant, i) => `
+            grid.innerHTML = filtered.map((plant, i) => {
+                const pStats = plantStats[plant.name];
+                let badge = '';
+                if (pStats.correct >= 3 && pStats.correct > pStats.wrong) {
+                    badge = '<div class="mastery-badge">Elsajátítva</div>';
+                } else if (pStats.correct > 0 || pStats.wrong > 0) {
+                    badge = '<div class="mastery-badge learning">Tanulás</div>';
+                }
+
+                return `
                 <div class="plant-card" onclick="showDetail(${plants.indexOf(plant)})">
-                    <img src="${plant.image}" alt="${plant.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22><rect fill=%22%23ddd%22 width=%22300%22 height=%22200%22/><text x=%22150%22 y=%22100%22 text-anchor=%22middle%22 fill=%22%23999%22>Kép</text></svg>'">
+                    ${badge}
+                    <img src="${plant.image}" alt="${plant.name}" onerror="this.style.background='#ddd'">
                     <div class="card-content">
                         <h3>${plant.name}</h3>
                         <div class="details">
-                            <p><strong>Magasság:</strong> ${plant.height}</p>
+                            <p><strong>Tulajdonságok:</strong> ${plant.height}</p>
                             <p><strong>Felhasználás:</strong> ${plant.usage}</p>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1044,19 +1428,42 @@
             document.getElementById('flashcardImg').src = plant.image;
             document.getElementById('flashcardName').textContent = plant.name;
             document.getElementById('flashcardInfo').innerHTML = `
-                <p><strong>Magasság:</strong> ${plant.height}</p>
+                <p><strong>Tulajdonságok:</strong> ${plant.height}</p>
                 <p><strong>Igény:</strong> ${plant.requirements}</p>
                 <p><strong>Felhasználás:</strong> ${plant.usage}</p>
             `;
             document.getElementById('flashcardCounter').textContent = currentFlashcard + 1;
             document.getElementById('flashcardTotal').textContent = plants.length;
             document.getElementById('flashcardCard').classList.remove('flipped');
+            document.getElementById('confidenceButtons').style.display = 'none';
+            document.getElementById('flashcardNav').style.display = 'flex';
         }
 
-        function flipCard(event) {
-            if (event) event.stopPropagation();
-            const flashcard = document.getElementById('flashcardCard');
-            flashcard.classList.toggle('flipped');
+        function flipFlashcard() {
+            const card = document.getElementById('flashcardCard');
+            card.classList.toggle('flipped');
+            if (card.classList.contains('flipped')) {
+                document.getElementById('confidenceButtons').style.display = 'flex';
+                document.getElementById('flashcardNav').style.display = 'none';
+            } else {
+                document.getElementById('confidenceButtons').style.display = 'none';
+                document.getElementById('flashcardNav').style.display = 'flex';
+            }
+        }
+
+        function rateFlashcard(known) {
+            const plant = plants[flashcardOrder[currentFlashcard]];
+            if (known) {
+                plantStats[plant.name].correct++;
+                currentStreak++;
+            } else {
+                plantStats[plant.name].wrong++;
+                currentStreak = 0;
+            }
+            plantStats[plant.name].lastSeen = Date.now();
+            saveStats();
+            updateHeaderStats();
+            nextFlashcard();
         }
 
         function nextFlashcard() {
@@ -1075,83 +1482,177 @@
             updateFlashcard();
         }
 
-        // Quiz Section
-        function startQuiz() {
-            quizScore = 0;
-            quizTotal = 0;
-            document.getElementById('quizScore').textContent = quizScore;
-            document.getElementById('quizTotal').textContent = quizTotal;
-            nextQuizQuestion();
+        document.getElementById('flashcardCard').addEventListener('click', flipFlashcard);
+
+        // Quiz Section - Spaced Repetition
+        function getNextQuizPlant() {
+            // Prioritize wrong answers, then unseen, then seen but not mastered
+            if (quizWrongPlants.length > 0 && Math.random() < 0.5) {
+                const idx = Math.floor(Math.random() * quizWrongPlants.length);
+                return quizWrongPlants.splice(idx, 1)[0];
+            }
+
+            // Filter out recently correct plants
+            const available = plants.filter(p => !quizCorrectPlants.includes(p.name));
+            if (available.length === 0) {
+                quizCorrectPlants = []; // Reset if all answered correctly
+                return plants[Math.floor(Math.random() * plants.length)];
+            }
+
+            // Sort by difficulty (more wrong = more likely to appear)
+            available.sort((a, b) => {
+                const aScore = plantStats[a.name].wrong - plantStats[a.name].correct;
+                const bScore = plantStats[b.name].wrong - plantStats[b.name].correct;
+                return bScore - aScore;
+            });
+
+            // Pick from top half (harder plants)
+            const topHalf = available.slice(0, Math.ceil(available.length / 2));
+            return topHalf[Math.floor(Math.random() * topHalf.length)];
         }
 
-        function nextQuizQuestion() {
-            const correctIndex = Math.floor(Math.random() * plants.length);
-            const correct = plants[correctIndex];
+        function startQuiz() {
+            quizScore = 0;
+            quizCorrect = 0;
+            quizWrong = 0;
+            quizStreak = 0;
+            quizQuestionNum = 0;
+            quizWaitingForNext = false;
+            quizWrongPlants = [];
+            quizCorrectPlants = [];
+            updateQuizDisplay();
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            quizQuestionNum++;
+            quizWaitingForNext = false;
+
+            const correct = getNextQuizPlant();
+            quizCurrentCorrect = correct;
 
             let options = [correct];
             while (options.length < 4) {
                 const random = plants[Math.floor(Math.random() * plants.length)];
-                if (!options.includes(random)) options.push(random);
+                if (!options.find(o => o.name === random.name)) options.push(random);
             }
             options = options.sort(() => Math.random() - 0.5);
 
             document.getElementById('quizImg').src = correct.image;
-            document.getElementById('quizOptions').innerHTML = options.map(opt => `
-                <button class="quiz-option" onclick="checkQuiz(this, '${opt.name}', '${correct.name}')">
+            document.getElementById('quizOptions').innerHTML = options.map((opt, i) => `
+                <button class="quiz-option" onclick="checkQuiz(this, '${opt.name.replace(/'/g, "\\'")}')">
+                    <span class="key-hint">${i + 1}</span>
                     ${opt.name}
                 </button>
             `).join('');
+
+            document.getElementById('quizFeedback').classList.remove('show');
+            document.getElementById('quizQuestionNum').textContent = `${quizQuestionNum}/${quizMaxQuestions}`;
+            document.getElementById('quizProgressFill').style.width = `${((quizQuestionNum - 1) / quizMaxQuestions) * 100}%`;
         }
 
-        function checkQuiz(btn, selected, correct) {
+        function checkQuiz(btn, selected) {
+            if (quizWaitingForNext) return;
+            quizWaitingForNext = true;
+
+            const correct = quizCurrentCorrect.name;
             const options = document.querySelectorAll('.quiz-option');
+
             options.forEach(opt => {
                 opt.classList.add('disabled');
-                if (opt.textContent.trim() === correct) {
+                if (opt.textContent.trim().substring(1).trim() === correct) {
                     opt.classList.add('correct');
                 }
             });
 
-            quizTotal++;
-            if (selected === correct) {
-                quizScore++;
+            const isCorrect = selected === correct;
+            if (isCorrect) {
                 btn.classList.add('correct');
-                markPlantLearned(correct);
+                quizCorrect++;
+                quizStreak++;
+                currentStreak++;
+                if (currentStreak > bestStreak) bestStreak = currentStreak;
+                plantStats[correct].correct++;
+                quizCorrectPlants.push(correct);
             } else {
                 btn.classList.add('incorrect');
+                quizWrong++;
+                quizStreak = 0;
+                currentStreak = 0;
+                plantStats[correct].wrong++;
+                quizWrongPlants.push(quizCurrentCorrect);
             }
 
-            document.getElementById('quizScore').textContent = quizScore;
-            document.getElementById('quizTotal').textContent = quizTotal;
-
+            plantStats[correct].lastSeen = Date.now();
             stats.total++;
-            if (selected === correct) stats.correct++;
+            if (isCorrect) stats.correct++;
             saveStats();
+            updateQuizDisplay();
+            updateHeaderStats();
 
-            setTimeout(nextQuizQuestion, 1500);
+            // Show feedback with correct answer
+            document.getElementById('quizCorrectAnswer').textContent = `Helyes válasz: ${correct}`;
+            document.getElementById('quizFeedback').classList.add('show');
+
+            // Check if quiz is complete
+            if (quizQuestionNum >= quizMaxQuestions) {
+                setTimeout(() => showQuizResults(), 500);
+            }
+        }
+
+        function nextQuizQuestion() {
+            if (!quizWaitingForNext) return;
+            if (quizQuestionNum >= quizMaxQuestions) {
+                showQuizResults();
+            } else {
+                showQuizQuestion();
+            }
+        }
+
+        function updateQuizDisplay() {
+            document.getElementById('quizCorrectCount').textContent = quizCorrect;
+            document.getElementById('quizWrongCount').textContent = quizWrong;
+            document.getElementById('quizStreakDisplay').textContent = quizStreak;
+            document.getElementById('quizScoreDisplay').textContent = `${quizCorrect} pont`;
+        }
+
+        function showQuizResults() {
+            const percent = Math.round((quizCorrect / quizMaxQuestions) * 100);
+            let message = '';
+            if (percent === 100) message = 'Tökéletes! Fantasztikus!';
+            else if (percent >= 80) message = 'Kiváló munka!';
+            else if (percent >= 60) message = 'Jó haladás!';
+            else if (percent >= 40) message = 'Gyakorolj tovább!';
+            else message = 'Ne add fel, próbáld újra!';
+
+            document.getElementById('resultsTitle').textContent = 'Kvíz vége!';
+            document.getElementById('resultsScore').textContent = `${percent}%`;
+            document.getElementById('resultsMessage').textContent = message;
+            document.getElementById('resultsOverlay').classList.add('show');
+        }
+
+        function closeResults() {
+            document.getElementById('resultsOverlay').classList.remove('show');
         }
 
         // Matching Game
         function startMatching() {
             matchedPairs = 0;
             matchingSelected = null;
-
-            // Select 6 random plants
             matchingPlants = [...plants].sort(() => Math.random() - 0.5).slice(0, 6);
 
             const imagesDiv = document.getElementById('matchingImages');
             const namesDiv = document.getElementById('matchingNames');
-
             const shuffledImages = [...matchingPlants].sort(() => Math.random() - 0.5);
             const shuffledNames = [...matchingPlants].sort(() => Math.random() - 0.5);
 
-            imagesDiv.innerHTML = shuffledImages.map((p, i) => `
+            imagesDiv.innerHTML = shuffledImages.map(p => `
                 <div class="matching-item" data-name="${p.name}" onclick="selectMatching(this, 'image')">
                     <img src="${p.image}" alt="Növény">
                 </div>
             `).join('');
 
-            namesDiv.innerHTML = shuffledNames.map((p, i) => `
+            namesDiv.innerHTML = shuffledNames.map(p => `
                 <div class="matching-item name-item" data-name="${p.name}" onclick="selectMatching(this, 'name')">
                     ${p.name}
                 </div>
@@ -1172,28 +1673,34 @@
                 matchingSelected = { element, type, name: element.dataset.name };
                 element.classList.add('selected');
             } else {
-                // Check match
                 if (matchingSelected.name === element.dataset.name) {
                     matchingSelected.element.classList.remove('selected');
                     matchingSelected.element.classList.add('matched');
                     element.classList.add('matched');
                     matchedPairs++;
                     document.getElementById('matchedCount').textContent = matchedPairs;
-                    stats.matches++;
-                    markPlantLearned(element.dataset.name);
+                    plantStats[element.dataset.name].correct++;
+                    currentStreak++;
                     saveStats();
+                    updateHeaderStats();
 
                     if (matchedPairs === 6) {
-                        setTimeout(() => alert('Gratulálok! Minden párt megtaláltál!'), 300);
+                        setTimeout(() => {
+                            document.getElementById('resultsTitle').textContent = 'Gratulálok!';
+                            document.getElementById('resultsScore').textContent = '100%';
+                            document.getElementById('resultsMessage').textContent = 'Minden párt megtaláltál!';
+                            document.getElementById('resultsOverlay').classList.add('show');
+                        }, 300);
                     }
                 } else {
                     element.classList.add('wrong');
                     matchingSelected.element.classList.add('wrong');
+                    currentStreak = 0;
                     setTimeout(() => {
                         element.classList.remove('wrong');
                         matchingSelected.element.classList.remove('wrong', 'selected');
                         matchingSelected = null;
-                    }, 500);
+                    }, 400);
                     return;
                 }
                 matchingSelected = null;
@@ -1204,28 +1711,51 @@
         function startWriting() {
             writingScore = 0;
             writingTotal = 0;
+            writingWrongPlants = [];
             document.getElementById('writingScore').textContent = writingScore;
             document.getElementById('writingTotal').textContent = writingTotal;
             nextWritingQuestion();
         }
 
+        function getNextWritingPlant() {
+            if (writingWrongPlants.length > 0 && Math.random() < 0.4) {
+                const idx = Math.floor(Math.random() * writingWrongPlants.length);
+                return writingWrongPlants.splice(idx, 1)[0];
+            }
+            return plants[Math.floor(Math.random() * plants.length)];
+        }
+
         function nextWritingQuestion() {
-            currentWritingPlant = plants[Math.floor(Math.random() * plants.length)];
+            currentWritingPlant = getNextWritingPlant();
+            writingChecked = false;
             document.getElementById('writingImg').src = currentWritingPlant.image;
             document.getElementById('writingInput').value = '';
             document.getElementById('writingInput').className = '';
+            document.getElementById('writingInput').disabled = false;
             document.getElementById('writingFeedback').className = 'writing-feedback';
+            document.getElementById('writingCorrectAnswer').style.display = 'none';
             document.getElementById('writingHint').textContent = '';
+            document.getElementById('writingCheckBtn').style.display = 'inline-block';
+            document.getElementById('writingNextBtn').classList.remove('show');
+            document.getElementById('writingInput').focus();
         }
 
         function checkWriting() {
+            if (writingChecked) return;
+            writingChecked = true;
+
             const input = document.getElementById('writingInput');
             const feedback = document.getElementById('writingFeedback');
+            const correctAnswer = document.getElementById('writingCorrectAnswer');
             const answer = input.value.trim().toLowerCase();
             const correct = currentWritingPlant.name.toLowerCase();
 
             writingTotal++;
             document.getElementById('writingTotal').textContent = writingTotal;
+
+            // Always show correct answer
+            correctAnswer.textContent = `Helyes válasz: ${currentWritingPlant.name}`;
+            correctAnswer.style.display = 'block';
 
             if (answer === correct) {
                 input.classList.add('correct');
@@ -1233,80 +1763,159 @@
                 feedback.className = 'writing-feedback show correct';
                 writingScore++;
                 document.getElementById('writingScore').textContent = writingScore;
-                markPlantLearned(currentWritingPlant.name);
+                plantStats[currentWritingPlant.name].correct++;
+                currentStreak++;
                 stats.correct++;
             } else {
                 input.classList.add('incorrect');
-                feedback.textContent = `Helytelen. A helyes válasz: ${currentWritingPlant.name}`;
+                feedback.textContent = 'Helytelen!';
                 feedback.className = 'writing-feedback show incorrect';
+                plantStats[currentWritingPlant.name].wrong++;
+                writingWrongPlants.push(currentWritingPlant);
+                currentStreak = 0;
             }
 
+            input.disabled = true;
             stats.total++;
             saveStats();
+            updateHeaderStats();
 
-            setTimeout(nextWritingQuestion, 2000);
+            document.getElementById('writingCheckBtn').style.display = 'none';
+            document.getElementById('writingNextBtn').classList.add('show');
         }
 
         function showWritingHint() {
+            if (writingChecked) return;
             const hint = document.getElementById('writingHint');
             const name = currentWritingPlant.name;
-            const revealed = name.substring(0, Math.ceil(name.length / 2));
+            const revealed = name.substring(0, Math.ceil(name.length / 3));
             hint.textContent = `Segítség: ${revealed}...`;
         }
 
         function skipWriting() {
-            document.getElementById('writingFeedback').textContent = `Kihagyva. A válasz: ${currentWritingPlant.name}`;
+            if (writingChecked) {
+                nextWritingQuestion();
+                return;
+            }
+            writingChecked = true;
+            document.getElementById('writingFeedback').textContent = 'Kihagyva';
             document.getElementById('writingFeedback').className = 'writing-feedback show incorrect';
-            setTimeout(nextWritingQuestion, 1500);
+            document.getElementById('writingCorrectAnswer').textContent = `Helyes válasz: ${currentWritingPlant.name}`;
+            document.getElementById('writingCorrectAnswer').style.display = 'block';
+            document.getElementById('writingInput').disabled = true;
+            document.getElementById('writingCheckBtn').style.display = 'none';
+            document.getElementById('writingNextBtn').classList.add('show');
+            writingWrongPlants.push(currentWritingPlant);
         }
 
         document.getElementById('writingInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkWriting();
+            if (e.key === 'Enter') {
+                if (writingChecked) {
+                    nextWritingQuestion();
+                } else {
+                    checkWriting();
+                }
+            }
         });
 
         // Statistics
-        function markPlantLearned(name) {
-            if (!stats.learnedPlants.includes(name)) {
-                stats.learnedPlants.push(name);
-            }
-            saveStats();
-        }
-
         function updateStats() {
-            document.getElementById('statQuizzes').textContent = stats.quizzes || Math.floor(stats.total / 10);
-            document.getElementById('statCorrect').textContent = stats.correct;
+            const mastered = Object.values(plantStats).filter(p => p.correct >= 3 && p.correct > p.wrong).length;
             const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-            document.getElementById('statAccuracy').textContent = accuracy + '%';
-            document.getElementById('statMatches').textContent = stats.matches;
 
-            const progress = Math.round((stats.learnedPlants.length / plants.length) * 100);
+            document.getElementById('statStreak').textContent = stats.bestStreak || bestStreak;
+            document.getElementById('statCorrect').textContent = stats.correct;
+            document.getElementById('statAccuracy').textContent = accuracy + '%';
+            document.getElementById('statMastered').textContent = mastered;
+
+            const progress = Math.round((mastered / plants.length) * 100);
             document.getElementById('progressPercent').textContent = progress + '%';
             document.getElementById('progressFill').style.width = progress + '%';
+
+            // Difficulty list
+            const sorted = plants.map(p => ({
+                name: p.name,
+                score: plantStats[p.name].correct - plantStats[p.name].wrong,
+                total: plantStats[p.name].correct + plantStats[p.name].wrong
+            })).filter(p => p.total > 0).sort((a, b) => a.score - b.score);
+
+            document.getElementById('difficultyList').innerHTML = sorted.slice(0, 10).map(p => {
+                const percent = p.total > 0 ? Math.max(0, Math.min(100, 50 + p.score * 10)) : 0;
+                let fillClass = '';
+                if (percent < 40) fillClass = 'hard';
+                else if (percent < 70) fillClass = 'medium';
+
+                return `
+                <div class="difficulty-item">
+                    <span class="name">${p.name}</span>
+                    <div class="score">
+                        <div class="score-bar">
+                            <div class="score-fill ${fillClass}" style="width: ${percent}%"></div>
+                        </div>
+                    </div>
+                </div>
+            `}).join('') || '<p style="color: var(--text-light); text-align: center;">Még nincs elég adat</p>';
         }
 
         function saveStats() {
-            localStorage.setItem('plantStats', JSON.stringify(stats));
+            stats.bestStreak = Math.max(stats.bestStreak || 0, bestStreak);
+            stats.plantStats = plantStats;
+            localStorage.setItem('plantStats2', JSON.stringify(stats));
         }
 
         function resetStats() {
-            if (confirm('Biztosan törölni szeretnéd a statisztikákat?')) {
-                stats = { quizzes: 0, correct: 0, total: 0, matches: 0, learnedPlants: [] };
+            if (confirm('Biztosan törölni szeretnéd az összes statisztikát?')) {
+                plants.forEach(p => {
+                    plantStats[p.name] = { correct: 0, wrong: 0, lastSeen: 0 };
+                });
+                stats = { correct: 0, total: 0, bestStreak: 0, plantStats: plantStats, masteredPlants: [] };
+                currentStreak = 0;
+                bestStreak = 0;
                 saveStats();
                 updateStats();
+                updateHeaderStats();
+                renderCards();
             }
         }
 
-        // Initialize
-        renderCards();
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            const activeSection = document.querySelector('.section.active');
+            if (!activeSection) return;
+            const sectionId = activeSection.id;
 
-        // Flashcard click event
-        document.getElementById('flashcardCard').addEventListener('click', function(e) {
-            e.preventDefault();
-            this.classList.toggle('flipped');
+            if (sectionId === 'flashcard') {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    flipFlashcard();
+                } else if (e.code === 'ArrowRight') {
+                    nextFlashcard();
+                } else if (e.code === 'ArrowLeft') {
+                    prevFlashcard();
+                }
+            } else if (sectionId === 'quiz') {
+                if (e.code === 'Space' && quizWaitingForNext) {
+                    e.preventDefault();
+                    nextQuizQuestion();
+                } else if (['Digit1', 'Digit2', 'Digit3', 'Digit4'].includes(e.code) && !quizWaitingForNext) {
+                    const idx = parseInt(e.code.replace('Digit', '')) - 1;
+                    const options = document.querySelectorAll('.quiz-option');
+                    if (options[idx]) options[idx].click();
+                }
+            } else if (sectionId === 'writing') {
+                // Enter is handled by input event listener
+            }
+
+            if (e.code === 'Escape') {
+                closeModal();
+                closeResults();
+            }
         });
 
-        // Pre-initialize flashcard
+        // Initialize
+        renderCards();
         initFlashcard();
+        updateHeaderStats();
     </script>
 </body>
 </html>
